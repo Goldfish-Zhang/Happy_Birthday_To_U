@@ -216,9 +216,26 @@ def on_continue():
         canvas.bind("<B1-Motion>", on_mouse_motion)
 
         # Add an Easter egg animation when clicking the 'HAPPY BIRTHDAY' text
+        # Add a shaking animation to the cat row
+        def shake_cat_animation(label, offset=5, count=0):
+            if count < 10:  # Shake 10 times
+                x_offset = offset if count % 2 == 0 else -offset
+                label.place_configure(x=label.winfo_x() + x_offset)
+                cake_window.after(100, shake_cat_animation, label, offset, count + 1)
+            else:
+                label.place_configure(x=100)  # Reset to original position
+
+        # Add a looping animation for the cat row to move from left to right
+        def animate_cat_row(label, x=0):
+            if x > 800:  # Reset position when it moves out of the screen
+                x = -200
+            label.place_configure(x=x, y=500)
+            cake_window.after(50, animate_cat_row, label, x + 10)
+
         def show_cat_animation():
             cat_row = tk.Label(cake_window, text="😺😺😺😺😺😺😺😺😺😺", font=("Silkscreen", 24), fg="white", bg="black")
-            cat_row.place(x=100, y=500)
+            cat_row.place(x=-200, y=500)  # Start off-screen
+            animate_cat_row(cat_row)  # Trigger the looping animation
 
         # Bind the click event to the 'HAPPY BIRTHDAY' text
         message_label.bind("<Button-1>", lambda event: show_cat_animation())
