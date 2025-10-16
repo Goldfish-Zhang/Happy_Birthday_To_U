@@ -50,16 +50,17 @@ def on_continue():
         date_label = tk.Label(cake_window, text=f"Your Birthday: {month}/{day}", font=("Silkscreen", 24), fg="white", bg="black")
         date_label.pack(pady=20)
 
-        # Display the main message
+        # Restore the main message with the middle cake
         message_label = tk.Label(cake_window, text="🎂 HAPPY BIRTHDAY 🎂", font=("Silkscreen", 40), fg="pink", bg="black")
         message_label.pack(pady=50)
 
-        # Display cakes on both sides
-        left_cake_label = tk.Label(cake_window, text="🎂", font=("Silkscreen", 48), fg="pink", bg="black")
-        left_cake_label.place(x=150, y=250)
+        # Remove the left and right cakes
+        # Commenting out the creation of left_cake_label and right_cake_label
+        # left_cake_label = tk.Label(cake_window, text="🎂", font=("Silkscreen", 48), fg="pink", bg="black")
+        # left_cake_label.place(x=150, y=250)
 
-        right_cake_label = tk.Label(cake_window, text="🎂", font=("Silkscreen", 48), fg="pink", bg="black")
-        right_cake_label.place(x=550, y=250)
+        # right_cake_label = tk.Label(cake_window, text="🎂", font=("Silkscreen", 48), fg="pink", bg="black")
+        # right_cake_label.place(x=550, y=250)
 
         # Update the window to ensure everything is displayed
         cake_window.update()
@@ -69,8 +70,8 @@ def on_continue():
         canvas.pack()
 
         # Add instructional text
-        instruction_label = tk.Label(cake_window, text="Try clicking or dragging", font=("Silkscreen", 16), fg="white", bg="black")
-        instruction_label.place(x=300, y=350)
+        instruction_label = tk.Label(cake_window, text="Try clicking, long pressing, or dragging with your mouse", font=("Silkscreen", 16), fg="white", bg="black")
+        instruction_label.place(relx=0.5, rely=0.9, anchor="center")
 
         def blink_text():
             current_color = instruction_label.cget("fg")
@@ -243,6 +244,13 @@ def on_continue():
         # Ensure the window updates its content
         cake_window.update_idletasks()
 
+        # Remove the swinging animation logic for the cakes
+        # left_cake_label = tk.Label(cake_window, text="🎂", font=("Silkscreen", 48), fg="pink", bg="black")
+        # left_cake_label.place(x=150, y=250)
+
+        # right_cake_label = tk.Label(cake_window, text="🎂", font=("Silkscreen", 48), fg="pink", bg="black")
+        # right_cake_label.place(x=550, y=250)
+
         # Keep the window open
         cake_window.mainloop()
     else:
@@ -251,7 +259,7 @@ def on_continue():
 # Create the main window
 root = tk.Tk()
 root.title("Birthday Celebration")
-root.geometry("600x450")
+root.geometry("800x600")
 root.configure(bg="black")
 
 # Add a label to ask for the user's birthday
