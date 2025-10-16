@@ -216,40 +216,91 @@ def on_continue():
         canvas.bind("<ButtonRelease-1>", on_mouse_up)
         canvas.bind("<B1-Motion>", on_mouse_motion)
 
-        # Add an Easter egg animation when clicking the 'HAPPY BIRTHDAY' text
-        # Add a shaking animation to the cat row
-        def shake_cat_animation(label, offset=5, count=0):
-            if count < 10:  # Shake 10 times
-                x_offset = offset if count % 2 == 0 else -offset
-                label.place_configure(x=label.winfo_x() + x_offset)
-                cake_window.after(100, shake_cat_animation, label, offset, count + 1)
-            else:
-                label.place_configure(x=100)  # Reset to original position
+        # Revert to the previous implementation of cat animations
+        # Define global variables for heart points and placed cats
+        heart_points = []
+        placed_cats = 0
 
-        # Add a looping animation for the cat row to move from left to right
-        def animate_cat_row(label, x=0):
-            if x > 800:  # Reset position when it moves out of the screen
-                x = -200
-            label.place_configure(x=x, y=500)
-            cake_window.after(50, animate_cat_row, label, x + 10)
+        def generate_heart_points():
+            """Generate points along a heart shape."""
+            points = []
+            for t in range(0, 360, 2):  # Generate points for 0 to 360 degrees
+                angle = math.radians(t)
+                x = int(250 * (16 * math.sin(angle)**3)) + 400  # Centered at (400, 200)
+                y = int(-250 * (13 * math.cos(angle) - 5 * math.cos(2 * angle) - 2 * math.cos(3 * angle) - math.cos(4 * angle))) + 200
+                points.append((x, y))
+            return points
 
-        def show_cat_animation():
-            cat_row = tk.Label(cake_window, text="😺😺😺😺😺😺😺😺😺😺", font=("Silkscreen", 24), fg="white", bg="black")
-            cat_row.place(x=-200, y=500)  # Start off-screen
-            animate_cat_row(cat_row)  # Trigger the looping animation
+        def prepare_heart_points():
+            """Shuffle heart points to create a random appearance."""
+            global heart_points
+            heart_points = generate_heart_points()
+            random.shuffle(heart_points)
 
-        # Bind the click event to the 'HAPPY BIRTHDAY' text
-        message_label.bind("<Button-1>", lambda event: show_cat_animation())
+        def place_next_cat():
+            """Place the next cat on the heart contour."""
+            global placed_cats, heart_points
 
-        # Ensure the window updates its content
-        cake_window.update_idletasks()
+            # Initialize heart points if not already done
+            if not heart_points:
+                prepare_heart_points()
 
-        # Remove the swinging animation logic for the cakes
-        # left_cake_label = tk.Label(cake_window, text="🎂", font=("Silkscreen", 48), fg="pink", bg="black")
-        # left_cake_label.place(x=150, y=250)
+            # Place the next cat if there are remaining points
+            if placed_cats < len(heart_points):
+                x, y = heart_points[placed_cats]
+                size = random.randint(20, 24)  # Random size for the cat
+                cat_label = tk.Label(cake_window, text="😺", font=("Silkscreen", size), fg="white", bg="black")
+                cat_label.place(x=x, y=y)
+                placed_cats += 1
 
-        # right_cake_label = tk.Label(cake_window, text="🎂", font=("Silkscreen", 48), fg="pink", bg="black")
-        # right_cake_label.place(x=550, y=250)
+        # Bind the click event to the 'HAPPY BIRTHDAY' text to place cats progressively
+        message_label.bind("<Button-1>", lambda event: place_next_cat())
+
+        # Cancel all scheduled tasks when the window is destroyed
+        def on_close():
+            try:
+                tasks = cake_window.tk.call("after", "info")
+                for task in tasks:
+                    cake_window.after_cancel(task)
+            except Exception as e:
+                print("Error while canceling tasks:", e)
+            finally:
+                cake_window.destroy()
+
+        cake_window.protocol("WM_DELETE_WINDOW", on_close)
+
+        # Initialize heart points
+        def initialize_heart_points():
+            nonlocal heart_points
+            # Generate points for the heart contour
+            heart_points = []
+            for t in range(0, 628, 10):  # 0 to 2π, step 0.1
+                t_rad = t / 100
+                x = 16 * (math.sin(t_rad) ** 3)
+                y = 13 * math.cos(t_rad) - 5 * math.cos(2*t_rad) - 2 * math.cos(3*t_rad) - math.cos(4*t_rad)
+                # Scale and offset to center of canvas, shifted upwards
+                canvas_x = 400 + int(x * 10)
+                canvas_y = 200 - int(y * 10)
+                heart_points.append((canvas_x, canvas_y))
+
+            # Shuffle the order for random cat placement
+            random.shuffle(heart_points)
+
+        heart_points = []
+        cat_count = 0
+
+        initialize_heart_points()
+
+        def place_next_cat():
+            nonlocal cat_count, heart_points
+            if cat_count < len(heart_points):
+                x, y = heart_points[cat_count]
+                # Place cat symbol on canvas
+                canvas.create_text(x, y, text="😺", font=("Arial", 20), fill="white", tags="cat")
+                cat_count += 1
+
+        # Bind click event to place cats on heart contour
+        message_label.bind("<Button-1>", lambda event: place_next_cat())
 
         # Keep the window open
         cake_window.mainloop()
