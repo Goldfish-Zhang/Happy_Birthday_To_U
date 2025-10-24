@@ -6,6 +6,13 @@ The Happy Birthday application is a Python-based interactive program designed to
 - Dynamic fireworks effects triggered by mouse actions (short press, long press, and drag).
 - A hidden Easter egg: clicking the pink "HAPPY BIRTHDAY" text reveals cat images, and continuous clicks form a heart-shaped pattern.
 
+## Demo Video
+Watch the application in action:
+
+https://github.com/Goldfish-Zhang/Happy_Birthday_To_U/assets/20251025_Happy_Birthday.mp4
+
+Or view the video file directly: [20251025_Happy_Birthday.mp4](./20251025_Happy_Birthday.mp4)
+
 ## Prerequisites
 To run this project, ensure you have the following installed:
 - Python 3.8 or higher
